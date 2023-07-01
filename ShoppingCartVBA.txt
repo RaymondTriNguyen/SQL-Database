@@ -1,0 +1,100 @@
+Private Sub CommandButton2_Click()
+
+End Sub
+
+Private Sub TextBox1_Change()
+
+End Sub
+
+Private Sub CommandButton1_Click()
+
+End Sub
+
+Private Sub AllRight_Click()
+
+End Sub
+
+Private Sub BuyAll_Click()
+Dim i As Long
+
+For i = ListBox1.ListCount - 1 To 0 Step -1
+    ListBox2.AddItem ListBox1.List(i)
+    ListBox1.RemoveItem i
+Next i
+End Sub
+
+Private Sub Clear_Click()
+ListBox1.Clear
+ListBox2.Clear
+End Sub
+
+Private Sub Label1_Click()
+
+End Sub
+
+Private Sub LoadData_Click()
+Dim conn As Object
+    Dim rs As Object
+    Dim strSQL As String
+    Dim brand As String
+    
+    ' Create a connection object
+    Set conn = CreateObject("ADODB.Connection")
+    
+    ' Connection string for SQL Server
+    conn.ConnectionString = "Provider=SQLOLEDB;Data Source=LAPTOP-OMDO5UQK\SQLEXPRESS;Initial Catalog=LearnSQL;Integrated Security=SSPI;"
+    
+    ' Open the connection
+    conn.Open
+    
+    ' SQL query to fetch the brand column from the Products table
+    strSQL = "SELECT Brand FROM Products"
+    
+    ' Create a recordset object and execute the query
+    Set rs = CreateObject("ADODB.Recordset")
+    rs.Open strSQL, conn
+    ' Clear the existing items in ListBox1
+    ListBox1.Clear
+    
+    ' Loop through the recordset and populate ListBox1 with brand values
+    Do Until rs.EOF
+        brand = rs.Fields("Brand").Value
+        ListBox1.AddItem brand
+        rs.MoveNext
+    Loop
+    
+    ' Close the recordset and connection
+    rs.Close
+    conn.Close
+    
+    ' Clean up the objects
+    Set rs = Nothing
+    Set conn = Nothing
+End Sub
+
+Private Sub MoveLeft_Click()
+If ListBox2.ListIndex <> -1 Then
+        ListBox1.AddItem ListBox2.Value
+        ListBox2.RemoveItem ListBox2.ListIndex
+    End If
+End Sub
+
+Private Sub MoveRight_Click()
+If ListBox1.ListIndex <> -1 Then
+        ListBox2.AddItem ListBox1.Value
+        ListBox1.RemoveItem ListBox1.ListIndex
+    End If
+End Sub
+
+Private Sub RemoveAll_Click()
+Dim i As Long
+
+For i = ListBox2.ListCount - 1 To 0 Step -1
+    ListBox1.AddItem ListBox2.List(i)
+    ListBox2.RemoveItem i
+Next i
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
