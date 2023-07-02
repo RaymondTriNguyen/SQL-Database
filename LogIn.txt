@@ -1,0 +1,85 @@
+Dim conn As Object
+    Dim cmd As Object
+    Dim userName As String
+    Dim password As String
+    
+    ' Get the user name and password from the textboxes
+    userName = TextBox1.Value
+    password = TextBox2.Value
+    
+    ' Create a connection object
+    Set conn = CreateObject("ADODB.Connection")
+    
+    ' Set the connection string
+    conn.ConnectionString = "Provider=SQLOLEDB;Data Source=TDS-LTP-ASU\MSSQLSERVER_EXP;Initial Catalog=LearnSQL;Integrated Security=SSPI;"
+    
+    ' Open the connection
+    conn.Open
+' Create a command object
+    Set cmd = CreateObject("ADODB.Command")
+    
+    ' Set the command properties
+    With cmd
+        .ActiveConnection = conn
+        .CommandType = 1 ' adCmdText - Represents a textual command
+        .CommandText = "INSERT INTO users (UserName, Password) VALUES (?, ?)" ' Replace 'users' with the actual table name and 'UserName' and 'Password' with the actual column names
+        .Parameters.Append .CreateParameter("UserName", 200, 1, 255, userName) ' Replace 'UserName' with the actual parameter name and adjust the data type and size accordingly
+        .Parameters.Append .CreateParameter("Password", 200, 1, 255, password) ' Replace 'Password' with the actual parameter name and adjust the data type and size accordingly
+        .Execute
+    End With
+    
+    ' Clean up
+    conn.Close
+    Set conn = Nothing
+    Set cmd = Nothing
+    
+    ' Display a success message
+    MsgBox "User is stored successful!"
+' _______________________________________________________________________________________________________________
+' check if the given user exists in database
+'show message that user is logged in successfully
+
+  Dim conn As Object
+    Dim cmd As Object
+    Dim userName As String
+    Dim password As String
+    Dim validUser As Boolean
+    
+    ' Get the values from TextBox1 and TextBox2
+    userName = TextBox1.Value
+    password = TextBox2.Value
+    
+    ' Create the connection object
+    Set conn = CreateObject("ADODB.Connection")
+    
+    ' Set the connection string
+    conn.ConnectionString = "Provider=SQLOLEDB;Data Source=TDS-LTP-ASU\MSSQLSERVER_EXP;Initial Catalog=LearnSQL;Integrated Security=SSPI;"
+    
+    ' Open the connection
+    conn.Open
+    
+    ' Create the command object
+    Set cmd = CreateObject("ADODB.Command")
+    
+    ' Set the command properties
+    cmd.ActiveConnection = conn
+    cmd.CommandText = "SELECT COUNT(*) FROM users WHERE username = ? AND password = ?"
+    cmd.CommandType = 1 ' adCmdText
+' Add parameters and set their values
+    cmd.Parameters.Append cmd.CreateParameter("@username", 200, 1, 255, userName)
+    cmd.Parameters.Append cmd.CreateParameter("@password", 200, 1, 255, password)
+    
+    ' Execute the command and check if the user exists
+    validUser = cmd.Execute().Fields(0).Value > 0
+    
+    ' Clean up
+    conn.Close
+    Set cmd = Nothing
+    Set conn = Nothing
+    
+    ' Display appropriate message based on validation result
+    If validUser Then
+        MsgBox "Login successful!", vbInformation
+    Else
+        MsgBox "Invalid username or password.", vbExclamation
+    End If
